@@ -16,7 +16,8 @@ st.set_page_config(layout="wide", page_title='Projet cinéma- Wild Code School',
 url_imdb = "https://www.imdb.com/"
 url_datasets = "https://datasets.imdbws.com/"
 url_doc = "https://www.imdb.com/interfaces/"
-df_films = pd.read_csv("https://raw.githubusercontent.com/jdessus/ProjetCinemaWildCodeSchool/out.csv", sep = ",",index_col='Film_Id',low_memory=False,  na_values=["\\N","nan"])
+df_films = pd.read_csv("https://raw.githubusercontent.com/jdessus/ProjetCinemaWildCodeSchool/main/out.csv", sep = ",",index_col='Film_Id',low_memory=False,  na_values=["\\N","nan"])
+
 
 #Sidebar
 st.sidebar.success("Sélectionnez une page au dessus.")
