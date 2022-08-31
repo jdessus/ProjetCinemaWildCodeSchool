@@ -1,2 +1,2 @@
 # ProjetCinemaWildCodeSchool
-Projet de selection de films
+Projet de selection et recommendations de films
