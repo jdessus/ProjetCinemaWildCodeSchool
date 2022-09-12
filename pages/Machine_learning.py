@@ -17,7 +17,7 @@ import re
 # ---------------------------------------
 ###
 
-df_film = pd.read_csv("https://raw.githubusercontent.com/jdessus/ProjetCinemaWildCodeSchool/main/out.csv", header=0, sep=",", low_memory=False, na_values= na_values)
+df_film = pd.read_csv("https://raw.githubusercontent.com/jdessus/ProjetCinemaWildCodeSchool/main/out.csv")
 df_film = df_film.drop(columns=['Nombre_acteurs_et_actrices'])
 
 # variables globales:
