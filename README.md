@@ -6,7 +6,9 @@ Le projet du goupe "Code au-dessus d'un nid de Python" est réalisé dans le cad
 Le projet consite à la sélection d'une partie des films de la base de données IMDb, afin de construire un outil de recommandation de films pour un cinéma fictif dans la Creuse.
 Le projet est construit avec le langage Python, nous utilisons le module Matplotlib et Seaborn pour la dataviz, mais aussi SK Learn pour le Machine Learning.
 Enfin nous utilisons Streamlit pour la visualisation du projet sur une page web !
-
+  
+## Appli Streamlit
+[lien](https://jdessus-projetcinemawildcodeschool-sommaire-k6z92e.streamlitapp.com/)
 
 ## Auteurs:
 
