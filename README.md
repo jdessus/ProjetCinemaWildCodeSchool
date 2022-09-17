@@ -11,7 +11,8 @@ Enfin nous utilisons Streamlit pour la visualisation du projet sur une page web 
 ## Auteurs:
 
 Equipe du projet "Code au-dessus d'un nid de Python" :  
-Magdalena Clérin Alias @magdaclerin,  
-Joachim Dessus Alias @jdessus,  
-Sébastien Tarres Alias @SebastienTarres,  
-Maikel Haddadi Alias @Maikelcode,  
+Magdalena Clérin [magdaclerin](https://github.com/magdaclerin)   
+Joachim Dessus [jdessus](https://github.com/jdessus)  
+Sébastien Tarres Alias [SebastienTarres](https://github.com/SebastienTarres)  
+Maikel Haddadi [Maikelcode](https://github.com/Maikelcode)
+
