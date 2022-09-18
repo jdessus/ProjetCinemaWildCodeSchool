@@ -12,7 +12,7 @@ import webbrowser
 # ---------------------------------------
 ###
 
-df_film = pd.read_csv("./final_table_.csv", sep=",", index_col='Film_Id', low_memory=False, na_values=["\\N", "nan"])
+df_film = pd.read_csv("https://raw.githubusercontent.com/jdessus/ProjetCinemaWildCodeSchool/main/out.csv", sep=",", index_col='Film_Id', low_memory=False, na_values=["\\N", "nan"])
 df_film = df_film.drop(columns=['Nombre_acteurs_et_actrices'])
 
 
