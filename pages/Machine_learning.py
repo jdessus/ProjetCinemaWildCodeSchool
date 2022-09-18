@@ -1,34 +1,27 @@
-# 31/08/2022
-# reste à faire : -  corriger les errors d'affichage (fonction recherche() )
-#                   - corriger la fin (bouton qui fait appel à la fonction recherche() à nouveau )
 
 import streamlit as st
 import pandas as pd
-
 from sklearn.neighbors import NearestNeighbors
-
 from sklearn.preprocessing import StandardScaler
 import unidecode
-
 import re
+import webbrowser
 
 ###
-# DECLARATIONS : TABLEAUX / FONCTIONS / FONCTIONS GLOBALES
+# DECLARATIONS : TABLEAUX / FONCTIONS / VAR GLOBALES
 # ---------------------------------------
 ###
 
-df_film = pd.read_csv("https://raw.githubusercontent.com/jdessus/ProjetCinemaWildCodeSchool/main/out.csv")
+df_film = pd.read_csv("./final_table_.csv", sep=",", index_col='Film_Id', low_memory=False, na_values=["\\N", "nan"])
 df_film = df_film.drop(columns=['Nombre_acteurs_et_actrices'])
 
-# variables globales:
-title = ""
 
 # fonction du nettoyage pour les str
 def cleanup(name):
     name = unidecode.unidecode(name)  # remove accent
     name = re.sub(r'[^\w\s]', ' ', name)  # remove punctuation
-    name = name.casefold().strip()  # lower and remove front and back space
-    name = re.sub(' +', ' ', name)  # remove dupliacte spaces
+    name = name.casefold().strip()  # lower and remove front and backspace
+    name = re.sub(' +', ' ', name)  # remove duplicate spaces
     return name
 
 
@@ -54,37 +47,52 @@ def rechecherFilmProche(movie):  # fonction recherche des films
     resultat_film_proche = df_film.iloc[film_proche]
     return resultat_film_proche
 
-def recherche():
-    # etape 2: recherche de l'index (tconst/movieID) de ce film via lower case
-    nom_recherche = title
-    index_recherche = df_film[df_film['TitreCleanedUp'] == nom_recherche].index.tolist()
+
+def recherche(title):
+    # récupérer le titre str saisi
+    index_recherche = df_film[df_film['TitreCleanedUp'] == title].index.tolist()
     rows_count = len(index_recherche)
 
-    # 1er cas - le titre exacte trouvé -> affichage de resultats
-    if rows_count == 1 :
+    # 1er cas - le titre exact trouvé → affichage de résultats
+    if rows_count == 1:
         resultat_film_proche = rechecherFilmProche(index_recherche)
-        result = resultat_film_proche[['Titre', 'Année_de_sortie']]
         st.write('Voici les films recommandés pour vous : ')
-        return result
+        for i in range(resultat_film_proche.shape[0]):
+            if st.button(label=resultat_film_proche['Titre'].iloc[i] + "\n" + "(" + str(
+                    resultat_film_proche['Année_de_sortie'].iloc[i])
+                               + " dir. " + str(resultat_film_proche['Directeur'].iloc[i]) + ")"):
+                # film_index = resultat_film_proche.index[i]
+                url = 'https://www.streamlit.io/'
+                webbrowser.open_new_tab(url)
 
-    elif rows_count < 1 :
-        print('Desolé pas de resultat pour votre recherche!')
-        resultat_possible = df_film[df_film['TitreCleanedUp'].str.contains(nom_recherche)]
+    #   cas 2 Plusieurs résultats disponibles contenant le mot recherché
+    elif rows_count < 1:
+        resultat_possible = df_film[df_film['TitreCleanedUp'].str.contains(title)]
         rows_count_resultat = len(resultat_possible)
-        if rows_count_resultat > 0 :
-            st.write('Desolé pas de résultat pour votre recherche!')
-            st.write('Voici les titres disponibles contenant le mot "', nom_recherche, '" :')
-            result = resultat_possible[['Titre', 'Année_de_sortie']]
-            return result
+        if rows_count_resultat > 0:
+            st.write('Plusieurs résultats disponibles contenant le mot "', title, '" :')
+            for i in range(resultat_possible.shape[0]):
+                if st.button(label=resultat_possible['Titre'].iloc[i] + "\n" + "(" + str(
+                        resultat_possible['Année_de_sortie'].iloc[i])
+                                   + " dir. " + str(resultat_possible['Directeur'].iloc[i]) + ")"):
+                    recherche(cleanup(resultat_possible['Titre'].iloc[i]))
             # option pour choisir l'un des titres suggérés
-        else :
-            st.write('Verifiez le titre de ton film!')
-            return None
-    else :
-        st.write("Plus d'un resultat trouvé avec ", nom_recherche, ' :')
-        resultat_possible = df_film[df_film['TitreCleanedUp'].str.contains(nom_recherche)]
-        result = resultat_possible
-        return result
+
+        # cas 3 - pas de resultats
+        else:
+            result = 'Verifiez le titre de ton film!'
+            return st.write(result)
+    else:
+
+        resultat_possible = df_film[df_film['TitreCleanedUp'].str.contains(title)]
+        st.write("Plus d'un résultat trouvé avec ", title, ' :')
+        for i in range(resultat_possible.shape[0]):
+            if st.button(label=resultat_possible['Titre'].iloc[i] + "\n" + "(" + str(
+                    resultat_possible['Année_de_sortie'].iloc[i])
+                               + " dir. " + str(resultat_possible['Directeur'].iloc[i]) + ")"):
+                recherche(cleanup(resultat_possible['Titre'].iloc[i]))
+        return None
+
 
 ###
 ### AFFICHAGE SUR SITE
@@ -98,17 +106,7 @@ st.write("Bienvenue dans notre système de recommendation ! ")
 title = st.text_input('Veuillez saisir le titre du film: ')
 
 if title:
-    title = cleanup(title)
-    df_recherche = recherche()
-    df_recherche = df_recherche.reset_index() # les résultats de la fonction spnt stockés sous forme de la df
-    try:
-        for i in range(df_recherche.shape[0]): # pour chaque ligne de la df_recherche ... 1. créer un bouton avec le résultat / 2. appeler la fonction "recherche" à nouveau, avec comme parametre la ligne de la df [i]:
-            st.button(label=df_recherche['Titre'].iloc[i]+"\n"+"("+str(df_recherche['Année_de_sortie'].iloc[i])+")")
-            condition = df_film['TitreCleanedUp'] == df_recherche['TitreCleanedUp'].iloc[i]
-            condition2 = df_film['Année_de_sortie'] == df_recherche['Année_de_sortie'].iloc[i]
-            st.write(df_film[condition & condition2]) # à cet étape le bouton retourne la ligne de la df concernée - mettre à la place l'appel de la fonction (recherche)
-    except AttributeError:
-        pass
-
+    title = cleanup(title)  # nettoyer le titre
+    df_recherche = recherche(title)  # faire sortir les résultats sous forme de la df
 
 #%%
